@@ -57,6 +57,16 @@ input, button {
     font-size: 1.25rem;
 }
 
+#task-category-select {
+    flex: 1 1 0%;
+    background-color: var(--darker);
+    padding: 1rem;
+    border-radius: 1rem;
+    margin-right: 1rem;
+    color: var(--light);
+    font-size: 1.25rem;
+}
+
 #task-submit {
     color: var(--green);
     font-size: 1.25rem;
