@@ -4,14 +4,13 @@ import Task from './Task';
 
 function TodoList() {
 
-  const [ tasks, setTasks ] = useState([])
-
+  const [ tasks, setTasks ] = useState([])  
   const [ taskName, setTaskName ] = useState("")
+  const [ taskUserId, setTaskUserId ] = useState(1)
   const [ taskdetails, setTaskdetails ] = useState("")
   const [ taskCategory, setTaskCategory ] = useState("default")
 
   const URL = "http://localhost:9292/"
-
   const disable = !taskName || !taskCategory
 
   const resetForm = () => {
@@ -26,7 +25,8 @@ function TodoList() {
     const taskInfo = {
         name: taskName,
         details: taskdetails,
-        category: taskCategory
+        category: taskCategory,
+        user_id: taskUserId,
     }   
 
     fetch(`${URL}tasks`, {
@@ -38,6 +38,7 @@ function TodoList() {
     })
         .then((r) => r.json())
         .then((data) => {
+            setTasks([...tasks, data])
             resetForm()
         })
     }    
@@ -49,17 +50,21 @@ function TodoList() {
             method: "DELETE",
         })
        .then((r) => r.json())
-       .then((task) => {       
+       .then((deleted) => { 
+        const newTasks = tasks.filter((task) => deleted.id !== task.id)     
+        setTasks(newTasks) 
        })        
     }    
 
     useEffect(() => {
         fetch(`${URL}tasks`)               
         .then((r) => r.json())
-        .then((tasksData) => {setTasks(tasksData)})               
-    }, [tasks])
+        .then((tasksData) => {setTasks(tasksData)
+                              console.log(tasks)
+        })               
+    }, [])
 
-    console.log(tasks)
+    
 
    return (
      <div>
@@ -87,7 +92,7 @@ function TodoList() {
             <section class="task-list">                
                 <h2>Tasks</h2>
                 <div id="tasks">                       
-                    { tasks.map((task, id) => <Task task={task} id={id} deleteTask={handleDelete}/>) }                   
+                    { tasks.map((task, id) => <Task task={task} id={id} deleteTask={handleDelete} setTasks={setTasks} tasks={tasks}/> ) }                   
                 </div>
             </section>
         </main>
