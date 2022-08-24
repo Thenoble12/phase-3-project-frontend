@@ -20,38 +20,57 @@ function Task({task, deleteTask, setTasks, tasks}) {
     editToggle ?  setEditToggle(0) : setEditToggle(1)
   }
 
-
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log("HERRREEEEE!!!!!!!!!!!!!!!!!!!!!!!!")
-      //debugger
+      const newObject = { id: task.id, 
+                    name: newTaskName,
+                    details: task.details,
+                    category: newTaskCategory,
+                    user_id: task.user_id }
+      
       fetch(`${URL}tasks/${task.id}`, {
         method: "PATCH",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
             name: newTaskName,
             details: task.details,
             category: newTaskCategory
-        }),
+        })
       })
         .then((r) => r.json())
-        .then((data) => {
+        .then((data) => {          
             handleToggle()
-            tasks.splice(1, tasks.indexOf(task), {id: task.id, name: newTaskName, details: task.details, category: newTaskCategory, user_id: task.user_id})
-            setTasks(tasks)
-        });  
-  }
+            let taskCopy = tasks           
+            
+            let newTaskList = taskCopy.map(object => {
+               if (object.id === task.id) return newObject 
+               return object              
+            })
 
-  
+            setTasks(newTaskList)
+            setTasks(newTaskList)
+      });  
+  }  
 
   return (
     <>
-        { editToggle ? <EditTask task={task} disable={disable} catArr={catArr} handleSubmit={handleSubmit} handleToggle={handleToggle} setNewTaskCategory={setNewTaskCategory} newTaskCategory={newTaskCategory} setNewTaskName={setNewTaskName} /> 
-                     : <ShowTask task={task} catArr={catArr} classArr={classArr} handleToggle={handleToggle} deleteTask={deleteTask} />
+        { editToggle ? <EditTask task={task} 
+                                 disable={disable}
+                                 catArr={catArr}
+                                 handleSubmit={handleSubmit}
+                                 handleToggle={handleToggle}
+                                 setNewTaskCategory={setNewTaskCategory}
+                                 newTaskCategory={newTaskCategory}
+                                 setNewTaskName={setNewTaskName} /> 
+
+                     : <ShowTask task={task}
+                                 catArr={catArr}
+                                 classArr={classArr}
+                                 handleToggle={handleToggle}
+                                 deleteTask={deleteTask} />
         }
     </>    
   )
